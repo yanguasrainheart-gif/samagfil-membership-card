@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAMAGFIL Membership Card Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #002b80, #ffcc00);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      color: #111;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px black;
+    }
+
+    .card {
+      width: 340px;
+      background: white;
+      border: 3px solid #d4af37;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: none;
+      text-align: center;
+      position: relative;
+    }
+
+    .card h2 {
+      margin: 8px 0 4px 0;
+      color: #002b80;
+    }
+
+    .card p {
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .qr-container {
+      margin-top: 12px;
+    }
+
+    .input-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 320px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 6px 0;
+      border: 2px solid #002b80;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #002b80;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ffcc00;
+      color: #002b80;
+    }
+
+    .download-btn {
+      background: #d4af37;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>SAMAGFIL Membership Card Generator</h1>
+
+  <div class="input-box">
+    <input type="text" id="name" placeholder="Full Name" /><br />
+    <input type="text" id="idnum" placeholder="ID Number" /><br />
+    <button id="generateBtn">Generate QR & Card</button>
+  </div>
+
+  <div class="card" id="card">
+    <h2 id="cardName"></h2>
+    <p>ID: <span id="cardID"></span></p>
+    <div class="qr-container" id="qrcode"></div>
+    <button class="download-btn" id="downloadBtn">Download Card as Image</button>
+  </div>
+
+  <!-- ✅ Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- ✅ JavaScript after DOM load -->
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      const generateBtn = document.getElementById("generateBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      generateBtn.addEventListener("click", function () {
+        const name = document.getElementById("name").value.trim();
+        const id = document.getElementById("idnum").value.trim();
+        if (!name || !id) {
+          alert("Please fill in both fields.");
+          return;
+        }
+
+        document.getElementById("cardName").textContent = name;
+        document.getElementById("cardID").textContent = id;
+
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = "";
+
+        new QRCode(qrContainer, {
+          text: `Name: ${name}\nID: ${id}`,
+          width: 128,
+          height: 128,
+        });
+
+        document.getElementById("card").style.display = "block";
+      });
+
+      downloadBtn.addEventListener("click", function () {
+        const card = document.getElementById("card");
+        html2canvas(card).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "SAMAGFIL_MemberCard.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
