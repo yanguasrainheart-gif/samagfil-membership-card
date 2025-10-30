@@ -108,4 +108,45 @@
     <button class="download-btn" onclick="downloadCard()">Download Card as Image</button>
   </div>
 
-  <!-- ✅ QRCode Libr
+  <!-- ✅ Working QRCode Library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- ✅ Include html2canvas for download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <script>
+    function generateCard() {
+      const name = document.getElementById("name").value.trim();
+      const id = document.getElementById("idnum").value.trim();
+      if (!name || !id) {
+        alert("Please fill in both fields.");
+        return;
+      }
+
+      document.getElementById("cardName").textContent = name;
+      document.getElementById("cardID").textContent = id;
+
+      const qrcodeContainer = document.getElementById("qrcode");
+      qrcodeContainer.innerHTML = ""; // clear previous QR
+
+      new QRCode(qrcodeContainer, {
+        text: `Name: ${name}\nID: ${id}`,
+        width: 128,
+        height: 128
+      });
+
+      document.getElementById("card").style.display = "block";
+    }
+
+    function downloadCard() {
+      const card = document.getElementById("card");
+      html2canvas(card).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "SAMAGFIL_MemberCard.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
